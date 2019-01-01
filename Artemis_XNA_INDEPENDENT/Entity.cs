@@ -59,7 +59,7 @@ namespace Artemis
         private readonly EntityManager entityManager;
 
         /// <summary>The entity world.</summary>
-        private readonly EntityWorld entityWorld;
+        public EntityWorld EntityWorld { get; }
 
         /// <summary>
         /// The unique id.
@@ -76,7 +76,7 @@ namespace Artemis
             this.SystemBits = 0;
             this.TypeBits = 0;
             this.IsEnabled = true;
-            this.entityWorld = entityWorld;
+            this.EntityWorld = entityWorld;
             this.entityManager = entityWorld.EntityManager;
             this.Id = id;
         }
@@ -110,12 +110,12 @@ namespace Artemis
         {
             get
             {
-                return this.entityWorld.GroupManager.GetGroupOf(this);
+                return this.EntityWorld.GroupManager.GetGroupOf(this);
             }
 
             set
             {
-                this.entityWorld.GroupManager.Set(value, this);
+                this.EntityWorld.GroupManager.Set(value, this);
             }
         }
 
@@ -138,19 +138,19 @@ namespace Artemis
         {
             get
             {
-                return this.entityWorld.TagManager.GetTagOfEntity(this);
+                return this.EntityWorld.TagManager.GetTagOfEntity(this);
             }
 
             set
             {
-                var oldTag = this.entityWorld.TagManager.GetTagOfEntity(this);
+                var oldTag = this.EntityWorld.TagManager.GetTagOfEntity(this);
                 if (value != oldTag)
                 {
                     if(oldTag != null)
-                        this.entityWorld.TagManager.Unregister(this);
+                        this.EntityWorld.TagManager.Unregister(this);
 
                     if(value != null)
-                        this.entityWorld.TagManager.Register(value, this);
+                        this.EntityWorld.TagManager.Register(value, this);
                 }
             }
         }
@@ -214,7 +214,7 @@ namespace Artemis
         /// <returns>The added component.</returns>
         public T AddComponentFromPool<T>() where T : ComponentPoolable
         {
-            T component = this.entityWorld.GetComponentFromPool<T>();
+            T component = this.EntityWorld.GetComponentFromPool<T>();
             this.entityManager.AddComponent<T>(this, component);
             return component;
         }
@@ -226,7 +226,7 @@ namespace Artemis
         {
             Debug.Assert(init != null, "Init delegate must not be null.");
 
-            T component = this.entityWorld.GetComponentFromPool<T>();
+            T component = this.EntityWorld.GetComponentFromPool<T>();
             init(component);
             this.entityManager.AddComponent<T>(this, component);
         }
@@ -239,7 +239,7 @@ namespace Artemis
                 return;
             }
 
-            this.entityWorld.DeleteEntity(this);
+            this.EntityWorld.DeleteEntity(this);
             this.DeletingState = true;
         }
 
@@ -294,7 +294,7 @@ namespace Artemis
                 return;
             }
 
-            this.entityWorld.RefreshEntity(this);
+            this.EntityWorld.RefreshEntity(this);
             this.RefreshingState = true;
         }
 
